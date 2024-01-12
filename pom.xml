@@ -144,7 +144,20 @@
 							<transformers>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<manifestEntries>
+										<Specification-Title>${project.artifactId}</Specification-Title>
+										<Specification-Version>${project.version}</Specification-Version>
+										<Implementation-Title>${project.artifactId}</Implementation-Title>
+										<Implementation-Version>${project.version}</Implementation-Version>
+										<Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
 										<Dependencies>javax.xml.bind.api,org.keycloak.keycloak-services,org.keycloak.keycloak-server-spi,org.keycloak.keycloak-server-spi-private</Dependencies>
+										<!--suppress UnresolvedMavenProperty -->
+										<Implementation-SCM-Revision-Number>${git.commit}</Implementation-SCM-Revision-Number>
+										<!--suppress UnresolvedMavenProperty -->
+										<Implementation-SCM-Revision-Date>${git.commit.timestamp.datetime}</Implementation-SCM-Revision-Date>
+										<!--suppress UnresolvedMavenProperty -->
+										<Implementation-Full-Version>${project.version}-${git.commit}</Implementation-Full-Version>
+										<Java-Version>${java.version}</Java-Version>
+										<Java-Vendor>${java.vendor}</Java-Vendor>
 									</manifestEntries>
 								</transformer>
 							</transformers>
