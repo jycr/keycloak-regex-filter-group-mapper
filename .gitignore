@@ -4,8 +4,14 @@
 # Log file
 *.log
 
-# BlueJ files
+# Temp file
+*.tmp
+*.tmp.*
+tmp.*
+
+# IDE files
 *.ctxt
+*.iml
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -27,3 +33,5 @@ target/
 .idea
 .vscode
 .DS_Store
+/.git-versioned-pom.xml
+/dependency-reduced-pom.xml
