@@ -11,6 +11,7 @@ import org.keycloak.representations.IDToken;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -121,10 +122,10 @@ public class GroupMapperFilterMapper extends GroupMembershipMapper {
         final Predicate<String> filter = getFilter(config);
         final Function<String, String> mapper = getMapper(config);
 
-        final List<String> groups = membership.stream()
+        final Set<String> groups = membership.stream()
                 .filter(filter)
                 .map(mapper)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         token.getOtherClaims().put(
                 protocolClaim,
