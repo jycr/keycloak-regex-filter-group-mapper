@@ -1,1 +1,1 @@
-groups.GroupFilterMapper
+io.github.jycr.keycloak.protocol.mapper.GroupMapperFilterMapper
