@@ -12,8 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -29,7 +29,7 @@ public class ConfigHelper {
      * Singleton
      */
     public static final ConfigHelper CONFIG = new ConfigHelper();
-    static final Function<String, String> NO_MAPPER = Function.identity();
+    static final UnaryOperator<String> NO_MAPPER = name -> name;
 
     private ConfigHelper() {
     }
@@ -39,12 +39,12 @@ public class ConfigHelper {
             .maximumSize(30)
             .build(this::buildPredicateFilter);
 
-    private final LoadingCache<Pair<String, String>, Function<String, String>> configCacheForMapping = Caffeine.newBuilder()
+    private final LoadingCache<Pair<String, String>, UnaryOperator<String>> configCacheForMapping = Caffeine.newBuilder()
             .expireAfterAccess(1, TimeUnit.DAYS)
             .maximumSize(30)
             .build(this::buildMapper);
 
-    private Function<String, String> buildMapper(Pair<String, String> configs) {
+    private UnaryOperator<String> buildMapper(Pair<String, String> configs) {
         if (configs == null || configs.getKey() == null || configs.getKey().isEmpty()) {
             LOGGER.debug("No mapper");
             return NO_MAPPER;
@@ -112,7 +112,7 @@ public class ConfigHelper {
         return configCacheForFilter.get(config);
     }
 
-    Function<String, String> getMapper(@Nullable Pair<String, String> configs) {
+    UnaryOperator<String> getMapper(@Nullable Pair<String, String> configs) {
         if (configs == null) {
             LOGGER.debug("No mapper");
             return NO_MAPPER;

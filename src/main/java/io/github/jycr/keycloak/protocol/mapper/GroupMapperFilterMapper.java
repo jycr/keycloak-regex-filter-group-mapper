@@ -1,6 +1,8 @@
 package io.github.jycr.keycloak.protocol.mapper;
 
+import org.keycloak.models.ClientSessionContext;
 import org.keycloak.models.GroupModel;
+import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.ProtocolMapperModel;
 import org.keycloak.models.UserSessionModel;
 import org.keycloak.protocol.oidc.mappers.GroupMembershipMapper;
@@ -12,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 /**
@@ -102,15 +104,18 @@ public class GroupMapperFilterMapper extends GroupMembershipMapper {
     /**
      * Adds the group membership information to the {@link IDToken#otherClaims}.
      *
-     * @param token        The {@link IDToken}
-     * @param mappingModel The {@link ProtocolMapperModel}
-     * @param userSession  The {@link UserSessionModel}
+     * @param token            The {@link IDToken}
+     * @param mappingModel     The {@link ProtocolMapperModel}
+     * @param userSession      The {@link UserSessionModel}
+     * @param clientSessionCtx The {@link ClientSessionContext}
      */
     @Override
     protected void setClaim(
-            final IDToken token,
-            final ProtocolMapperModel mappingModel,
-            final UserSessionModel userSession
+            IDToken token,
+            ProtocolMapperModel mappingModel,
+            UserSessionModel userSession,
+            KeycloakSession keycloakSession,
+            ClientSessionContext clientSessionCtx
     ) {
         final Map<String, String> config = mappingModel.getConfig();
 
@@ -122,7 +127,7 @@ public class GroupMapperFilterMapper extends GroupMembershipMapper {
 
 
         final Predicate<String> filter = getFilter(config);
-        final Function<String, String> mapper = getMapper(config);
+        final UnaryOperator<String> mapper = getMapper(config);
 
         final Set<String> groups = membership.stream()
                 .filter(filter)
@@ -141,7 +146,7 @@ public class GroupMapperFilterMapper extends GroupMembershipMapper {
     }
 
 
-    private static Function<String, String> getMapper(final Map<String, String> config) {
+    private static UnaryOperator<String> getMapper(final Map<String, String> config) {
         return ConfigHelper.CONFIG.getMapper(Pair.pair(config.get(KEY_CONFIG_MAPPING), config.get(KEY_CONFIG_STOP_ON_FIRST_MATCH)));
     }
 }
