@@ -42,6 +42,8 @@ public class GroupMapperFilterMapper extends GroupMembershipMapper {
             "If matched on a 'Group mapping substitution rules', does not perform subsequent substitutions. " +
                     "If set to false, this may impact performance.";
 
+    private static final Predicate<String> IGNORE_EMPTY_GROUP_NAME = name -> name != null && !name.isEmpty();
+
     static {
         OIDCAttributeMapperHelper.addTokenClaimNameConfig(configProperties);
 
@@ -124,6 +126,7 @@ public class GroupMapperFilterMapper extends GroupMembershipMapper {
 
         final Set<String> groups = membership.stream()
                 .filter(filter)
+                .filter(IGNORE_EMPTY_GROUP_NAME)
                 .map(mapper)
                 .collect(Collectors.toSet());
 
